@@ -1,0 +1,15 @@
+﻿{
+	"Name": "Restless Sleep Mod",
+	"Authour": "Gray Sloth",
+	"Version":
+	{
+		"MajorVersion": 0,
+		"MinorVersion": 0,
+		"PatchVersion": 0,
+		"Build": ""
+	},
+	"UniqueID": "GSRestlessSleepMod",
+	"Description": "You get no energy back for sleeping.",
+	"PerSaveConfigs": false,
+	"EntryDll":  "RestlessSleepMod.dll"
+}
