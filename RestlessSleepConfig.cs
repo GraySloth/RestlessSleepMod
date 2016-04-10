@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace RestlessSleepMod
 {
-    class RestlessSleepConfig : Config
+    public class RestlessSleepConfig : Config
     {
-        public int emergencyEnergy { get; set; }
         public int energyFromSleep { get; set; }
+        public int emergencyEnergy { get; set; }
+        
 
         public override T GenerateDefaultConfig<T>()
         {
-            emergencyEnergy = 0;
             energyFromSleep = 0;
+            emergencyEnergy = 0;
             return this as T;
         }
     }

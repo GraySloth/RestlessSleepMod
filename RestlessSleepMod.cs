@@ -11,7 +11,7 @@ namespace RestlessSleepMod
 {
     public class RestlessSleepMod : Mod
     {
-        public static RestlessSleepConfig ModConfig { get; private set; }
+        public static RestlessSleepConfig ModConfig { get; protected set; }
         private static int energy; //stores stamina at the end of the day to overwrite the filled stamina at the beginning of the day
 
         public override void Entry(params object[] objects)
