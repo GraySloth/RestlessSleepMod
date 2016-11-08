@@ -12,7 +12,7 @@ namespace RestlessSleepMod
     public class RestlessSleepMod : Mod
     {
         public static RestlessSleepConfig ModConfig { get; protected set; }
-        private static int energy; //stores stamina at the end of the day to overwrite the filled stamina at the beginning of the day
+        private static float pre_stam; //stores stamina at the end of the day to overwrite the filled stamina at the beginning of the day
 
         public override void Entry(params object[] objects)
         {
@@ -21,41 +21,21 @@ namespace RestlessSleepMod
             StardewModdingAPI.Events.TimeEvents.DayOfMonthChanged += Event_DayOfMonthChanged;
         }
 
-        //Gets player(s) and saves the average of their energy at the end of the day to energy
+        //Gets player and saves their energy at the end of the day to pre_stam
         static void Event_OnNewDay(object sender, EventArgs e)
         {
-            List<Farmer> players;
-            List<float> staminas = new List<float>();
-            Farmer player;
-            players = Game1.getAllFarmers();
-            foreach (Farmer obj in players)
-            {                
-                player = (Farmer)obj;
-                //Player stamina actually goes into the negative,
-                //at a certain point any single stamina consuming action makes you pass out
-                //This gives you a little bit of breathing room.
-                if (player.stamina < 0){
-                    staminas.Add(ModConfig.emergencyEnergy); //default: 0
-                }
-                else {
-                    staminas.Add(player.stamina); 
-                }                
-            }
-            //this adds the average of the player(s) stamina (Currently only one player) with the configurable energy from sleep and saves it to energy
-            energy = (int)staminas.Average() + ModConfig.energyFromSleep; 
+            Farmer Player = Game1.player;
+
+            if (Player.stamina < 0) Player.stamina = ModConfig.emergencyEnergy; //default: 0    
+
+            pre_stam = Player.stamina;
         }
 
-        //sets player(s) stamina to the value stored in energy after it's been filled by sleep at the start of the day
+        //sets player(s) stamina to the value stored in pre_stam after it's been filled by sleep at the start of the day
         static void Event_DayOfMonthChanged(object sender, EventArgs e)
         {
-            List<Farmer> players;
-            Farmer player;
-            players = Game1.getAllFarmers();
-            foreach (Farmer obj in players)
-            {
-                player = (Farmer)obj;
-                player.stamina = energy;
-            }
+            Farmer Player = Game1.player;
+            Player.stamina = pre_stam + ModConfig.energyFromSleep;
         }
 
     }
