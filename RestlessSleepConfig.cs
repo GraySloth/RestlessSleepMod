@@ -8,18 +8,17 @@ using System.Threading.Tasks;
 
 namespace RestlessSleepMod
 {
-    public class RestlessSleepConfig : Config
+    public class RestlessSleepConfig
     {
+        public bool energyGainRelative { get; set; }
         public int energyFromSleep { get; set; }
-        public int emergencyEnergy { get; set; }
-        
+        public int minimumEnergy { get; set; }
 
-        public override T GenerateDefaultConfig<T>()
+        public RestlessSleepConfig()
         {
-            energyFromSleep = 0;
-            emergencyEnergy = 0;
-            return this as T;
+            this.energyGainRelative = false;
+            this.energyFromSleep = 0;
+            this.minimumEnergy = 0;
         }
     }
-
 }
