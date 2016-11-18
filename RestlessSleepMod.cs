@@ -13,7 +13,7 @@ namespace RestlessSleepMod
         public static RestlessSleepConfig config;
         private static float pre_stam; //stores stamina at the end of the day to overwrite the filled stamina at the beginning of the day
 
-        public override void Entry(ModHelper helper)
+        public override void Entry(IModHelper helper)
         {
             config = helper.ReadConfig<RestlessSleepConfig>();
             StardewModdingAPI.Events.TimeEvents.OnNewDay += Event_OnNewDay;
@@ -26,11 +26,15 @@ namespace RestlessSleepMod
             if (Game1.newDay) //Gets player and saves their energy at the end of the day to pre_stam
             {
                 double sleep_stam = (config.energyGainRelative) ? config.energyFromSleep * (Player.maxStamina / 270.0) : config.energyFromSleep;
-                pre_stam = (float)Math.Min(Math.Max(Player.stamina, 0) + ((Player.exhausted) ? sleep_stam / 2 + 1 : sleep_stam), Player.maxStamina);
+                if (Player.exhausted)
+                    sleep_stam = (sleep_stam < 0) ? (sleep_stam * 2 + 1) : (sleep_stam / 2 + 1);
+                if (Game1.timeOfDay > 2400)
+                    sleep_stam = sleep_stam - ((sleep_stam < 0) ? -1 : 1) * (1.0 - (2600 - Math.Min(2600, Game1.timeOfDay)) / 200.0) * (sleep_stam / 2);
+                pre_stam = (float)Math.Min(Math.Max(Player.stamina, 0) + sleep_stam, Player.maxStamina);
 
                 double min_stam = (config.energyGainRelative) ? config.minimumEnergy * (Player.maxStamina / 270.0) : config.minimumEnergy;
                 if (pre_stam <= min_stam)
-                    pre_stam = (float)min_stam; //default: 0    
+                    pre_stam = (float)min_stam;
             }
             else //sets player(s) stamina to the value stored in pre_stam after it's been filled by sleep at the start of the day
             {
